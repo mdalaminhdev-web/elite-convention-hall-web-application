@@ -1,96 +1,208 @@
-# Elite Convention Hall — Complete Web Application (Phases 1–12)
+# Elite Convention Hall — Web Application
 
-**One consolidated source project:** React public website + React Admin CMS + Node.js/Express API + MySQL initial database schema and tests.
+A web application for Elite Convention Hall featuring a public-facing website, an administrative content management system (CMS), a REST API, and a MySQL database.
 
-**Scope:** Only the approved **Elite Convention Hall Portfolio & Event Inquiry Website** and its Admin CMS. This does NOT contain a separate internal management, confirmed booking, payment, payroll, or CRM application.
+The application allows visitors to explore venue information, browse gallery albums, review facilities and vendors, view the inquiry calendar, and submit event inquiries. Administrators can manage website content and review submitted inquiries through the admin dashboard.
 
-## Where everything is
+## Live Demo
 
-| Component | Folder |
-| --- | --- |
-| Public website (React + Vite) | `frontend/public-website/` |
-| Admin Dashboard and CMS (React + Vite) | `frontend/admin-dashboard/` |
-| Backend REST API (Node.js + Express) | `backend/` |
-| One-file MySQL database setup | `database/Elite_Convention_Hall_Full_Initial_MySQL_Setup.sql` |
-| Ordered MySQL migrations | `database/migrations/` (`000`–`010`) |
-| Database ER diagram and column dictionary | `database/ERD.mmd`, `database/DATABASE_DESIGN.md` |
-| Database verification scripts | `database/verify_installation.sql`, `database/calendar_option_a_test.sql` |
-| API and integration tests | `backend/tests/` |
-| Browser end-to-end tests | `e2e/`, `playwright.config.mjs` |
-| Approved 40-page website PRD | `docs/requirements/Elite_Convention_Hall_PRD_Final_Revised.pdf` |
-| Phased acceptance checklists | `docs/PHASE*_ACCEPTANCE*.md` |
-| Historical phase READMEs | `docs/phase_history/` |
+**Live Website:** https://elite-convention-hall-web-applicati-gamma.vercel.app/
 
-## Quick setup: Windows + VS Code + MySQL Workbench
+The deployed website provides a preview of the Elite Convention Hall public-facing web application.
 
-### Requirements
+For local development, setup instructions, database configuration, and testing procedures, refer to the sections below.
 
-- Node.js >=22.12 and npm >=10
-- MySQL >=8.0.16 (8.4 LTS recommended for new installations)
+## Project Structure
+
+```text
+frontend/
+├── public-website/       # Public-facing website
+└── admin-dashboard/      # Admin dashboard and CMS
+
+backend/                  # Node.js and Express REST API
+
+database/
+├── migrations/           # Database migration scripts
+├── Elite_Convention_Hall_Full_Initial_MySQL_Setup.sql
+├── ERD.mmd               # Database relationship diagram
+├── DATABASE_DESIGN.md    # Database structure and field reference
+├── verify_installation.sql
+└── calendar_option_a_test.sql
+
+backend/tests/            # API and integration tests
+e2e/                      # Browser end-to-end tests
+
+docs/
+├── requirements/         # Approved project requirements
+├── phase_history/        # Development documentation
+└── PHASE*_ACCEPTANCE*.md # Phase acceptance checklists
+
+playwright.config.mjs
+```
+
+## Technology Stack
+
+- **Frontend:** React, Vite
+- **Backend:** Node.js, Express
+- **Database:** MySQL 8.0.16 or later
+- **Testing:** API tests, integration tests, Playwright
+- **Development environment:** Windows, VS Code, MySQL Workbench
+
+## Application Features
+
+### Public Website
+
+The website includes the following sections:
+
+- Homepage and venue introduction
+- Gallery albums, album details, and image lightbox
+- Event inquiry form
+- Inquiry calendar
+- Venue facilities
+- Event service vendors
+- Client reviews
+- Frequently asked questions
+- Contact information
+- Footer and branding content
+
+### Admin Dashboard
+
+The protected administration panel provides tools to manage:
+
+- Dashboard overview
+- Event inquiries
+- Calendar inquiry counts
+- Gallery albums and images
+- Facilities
+- Vendors
+- Client reviews
+- FAQs
+- Contact information
+- Homepage hero and About sections
+- Footer content
+- Website branding
+
+### Event Inquiry Calendar
+
+The calendar supports three display modes:
+
+- **MANUAL:** Displays manually entered counts. Dates without a count record remain blank, while an explicitly entered zero is displayed as `0`.
+- **REAL:** Displays counts derived from submitted inquiry records.
+- **HIDDEN:** Hides inquiry counts.
+
+Submitting an inquiry does not create a booking, reserve a date, or block the venue calendar. The application does not include confirmed booking management or payment processing.
+
+## Requirements
+
+Install the following software before starting development:
+
+- Node.js `>=22.12`
+- npm `>=10`
+- MySQL `>=8.0.16`
 - MySQL Workbench
 
-### Step 1 — Install the database (first-time only)
+MySQL 8.4 LTS is recommended for a new installation.
 
-1. Open **MySQL Workbench** and connect with a database account authorized to create the database.
-2. Open `database/Elite_Convention_Hall_Full_Initial_MySQL_Setup.sql`.
-3. **Use this only for a brand-new database** named `elite_convention_hall`; if you have an existing populated database, back it up and do not reimport the initial setup script.
-4. Execute the SQL file once and run `database/verify_installation.sql`.
-5. Expected: `schema_migrations` records **000–010**; **25 application tables** plus the migration table (26 total).
-6. Create a separate, least-privileged application MySQL account and grant only needed privileges to `elite_convention_hall`. Configure that account in the backend environment file.
+## Installation and Setup
 
-**Important:** These SQL files create the **database structure** and initial mode/settings, not a backup of your existing live customers, inquiries, uploaded images, or real administrator accounts. Those data cannot be reconstructed from source code alone.
+### 1. Set Up the Database
 
-### Step 2 — Configure backend and install packages
+1. Start MySQL and open MySQL Workbench.
+2. Connect using a database account with permission to create the required database.
+3. Open `database/Elite_Convention_Hall_Full_Initial_MySQL_Setup.sql`.
+4. Execute the script against a new database installation.
+5. Run `database/verify_installation.sql` to verify the schema.
 
-Open PowerShell in this extracted project directory:
+The expected installation contains migration records `000` through `010`, 25 application tables, and one migration tracking table.
+
+**Important:** The initial setup script is intended for a new database named `elite_convention_hall`. Do not run it over an existing populated database without first reviewing the script and creating a verified backup.
+
+The SQL setup creates the database structure and initial settings. It does not restore existing customer records, submitted inquiries, uploaded media, or administrator accounts.
+
+For security, create a dedicated MySQL account for the application and grant only the privileges it requires.
+
+### 2. Install Dependencies
+
+Open PowerShell in the project root directory and run:
 
 ```powershell
 npm install
+```
+
+Create the backend environment file:
+
+```powershell
 Copy-Item backend/.env.example backend/.env
 ```
 
-Edit `backend/.env` to set `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, and `ADMIN_ALLOWED_ORIGINS` for your computer.
-Generate a secure, random session secret:
+Open `backend/.env` and configure the following variables:
+
+```dotenv
+DB_HOST=
+DB_PORT=
+DB_NAME=elite_convention_hall
+DB_USER=
+DB_PASSWORD=
+ADMIN_ALLOWED_ORIGINS=
+SESSION_SECRET=
+```
+
+Use the actual values for your local environment. Generate a secure session secret with:
 
 ```powershell
 node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"
 ```
 
-Paste this value as `SESSION_SECRET` in `backend/.env`. Never commit or share `.env`.
+Copy the generated value into `SESSION_SECRET`.
 
-### Step 3 — Check MySQL and create your first Admin login
+Keep `.env` out of version control. Do not share database credentials or session secrets.
+
+### 3. Verify the Database and Create an Administrator
+
+Run these commands from the project root:
 
 ```powershell
 npm run db:check
 npm run admin:create
 ```
 
-`admin:create` prompts interactively for an Admin name, email and password. No hardcoded default password is supplied.
+Follow the interactive prompts to create the initial administrator account. Choose a strong password.
 
-### Step 4 — Run all three applications (three terminals)
+### 4. Start the Applications
 
-**Terminal 1:**
+Run each command in a separate PowerShell terminal from the project root.
+
+**Terminal 1 — Backend API**
+
 ```powershell
 npm run dev:api
 ```
 
-**Terminal 2:**
+**Terminal 2 — Public Website**
+
 ```powershell
 npm run dev:public
 ```
 
-**Terminal 3:**
+**Terminal 3 — Admin Dashboard**
+
 ```powershell
 npm run dev:admin
 ```
 
-- **Public site:** http://127.0.0.1:5173/
-- **Gallery:** http://127.0.0.1:5173/gallery
-- **Event inquiry:** http://127.0.0.1:5173/inquiry
-- **Admin login:** http://127.0.0.1:5174/login
-- **API health:** http://127.0.0.1:4000/api/v1/health
+Once the services are running, open the relevant local URLs.
 
-### Step 5 — Test before accepting production readiness
+| Service | Local URL |
+|---|---|
+| Public website | http://127.0.0.1:5173/ |
+| Gallery | http://127.0.0.1:5173/gallery |
+| Event inquiry | http://127.0.0.1:5173/inquiry |
+| Admin login | http://127.0.0.1:5174/login |
+| API health check | http://127.0.0.1:4000/api/v1/health |
+
+## Testing and Verification
+
+Run the available checks from the project root:
 
 ```powershell
 npm run check:contracts
@@ -99,27 +211,79 @@ npm run test:api
 npm run test:integration
 npm run build
 npm run db:check
+```
+
+Install the Playwright Chromium browser if it is not already available:
+
+```powershell
 npx playwright install chromium
+```
+
+Then run the end-to-end tests:
+
+```powershell
 npm run test:e2e
 ```
 
-Playwright browser tests use **mock API fixtures**. Passing them does not establish that production MySQL and API transactions work correctly. See `docs/PHASE12_ACCEPTANCE.md` for live acceptance criteria and remaining test blockers.
+The current browser tests use mock API fixtures. A successful browser test run alone does not verify database transactions, production API behavior, or real media uploads. Those areas require testing against a correctly configured environment.
 
-## Included business features
+Refer to `docs/PHASE12_ACCEPTANCE.md` for the current acceptance criteria and outstanding verification requirements.
 
-The homepage follows the approved section order: Hero, About, Gallery, Query Calendar, Facilities, Vendors, Client Reviews, FAQ, Contact and Footer. The Gallery includes album listing, album details and lightbox. Visitor inquiry submissions capture preferred date/shift, not a booking or confirmed reservation.
+## Database Documentation
 
-Admin CMS includes protected Dashboard, Inquiry Management, Inquiry Count Management, Gallery, Facilities, Vendors, Reviews, FAQs, Contact, Hero, About, Footer and branding content.
+The `database/` directory contains the initial schema, ordered migrations, installation verification scripts, calendar-specific tests, an entity relationship diagram, and a database design reference.
 
-**Calendar policy approved by the user:** in MANUAL mode, dates with no manual count record are blank, while an explicit manual `0` is displayed as `0`. REAL mode uses submitted inquiry records. HIDDEN mode displays no counts. Inquiry submission never books, reserves or blocks a date.
+For further details, review:
 
-## Status / production limitations
+- `database/README.md`
+- `database/DATABASE_DESIGN.md`
+- `database/ERD.mmd`
+- `database/verify_installation.sql`
 
-- This is the **cumulative developed source through Phase 12**. It is not a claim that all live E2E tests have passed or that the project is deployed.
-- Source-level contract tests and backend syntax checks passed in the packaging environment; full npm builds, integration runtime against live MySQL, browser verification and real media upload tests remain to be performed on a properly configured machine.
-- **Phases 13–15** (security/SEO/performance hardening, deployment, final handover) have **not** been developed in this package.
-- PRD-cropped reference images and preview assets are temporary; replace with actual approved venue media/branding. No fictitious live reviews, vendors, inquiries or customer information are included.
-- npm dependencies (`node_modules`), personal secrets (`.env`), live uploaded media and real MySQL data are intentionally excluded from the ZIP.
-- Keep any existing `backend/.env`, uploads, MySQL data, and backups safe if migrating from an older project copy. Do **not** overwrite a populated database with the initial setup script.
+## Project Scope
 
-Read the existing `database/README.md`, `docs/PHASE12_ACCEPTANCE.md`, and `docs/phase_history/PHASE12_ORIGINAL_README.md` for technical details.
+This repository covers the public website, administrative CMS, backend API, and supporting database structure for the approved Elite Convention Hall website project.
+
+The application is designed for venue presentation and event inquiry collection. It is not a separate internal operations or venue management platform.
+
+The following are outside the current scope:
+
+- Confirmed booking and reservation management
+- Payment processing
+- Payroll and employee management
+- Petty cash and hall cash management
+- A separate CRM application
+
+## Current Development Status
+
+The source code includes development work through Phase 12. This does not mean that all acceptance tests have passed or that the application is ready for production deployment.
+
+The following work remains to be completed or verified:
+
+- Full dependency installation and production builds
+- Integration testing against a configured MySQL database
+- Live API and database transaction verification
+- End-to-end browser testing
+- Real image and media upload verification
+- Security, SEO, and performance hardening
+- Deployment and final handover
+
+These remaining items correspond to the planned work for Phases 13–15.
+
+Temporary preview images and reference assets should be replaced with approved venue photography and branding before release. No fictitious customer reviews, vendors, inquiries, or customer records should be used as real production content.
+
+## Deployment and Handover Notes
+
+The repository does not include installed npm dependencies, environment secrets, live uploaded media, or existing production database records.
+
+Before migrating from another project copy:
+
+1. Back up the existing database.
+2. Preserve the current environment configuration.
+3. Keep uploaded media and related files intact.
+4. Verify the database migrations and application configuration.
+5. Run the required tests before deployment.
+
+Do not overwrite a populated database with the initial setup script.
+
+For phase-specific implementation details, review the relevant acceptance checklist and the documentation under `docs/phase_history/`.
