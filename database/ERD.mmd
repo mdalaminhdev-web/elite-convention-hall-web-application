@@ -1,0 +1,54 @@
+erDiagram
+    ADMIN_USERS ||--o{ MEDIA_ASSETS : uploads
+    ADMIN_USERS ||--o{ ADMIN_AUDIT_LOGS : performs
+    ADMIN_USERS ||--o{ MANUAL_INQUIRY_COUNTS : updates
+    MEDIA_ASSETS ||--o{ GALLERY_ALBUMS : cover
+    GALLERY_ALBUMS ||--o{ GALLERY_PHOTOS : contains
+    MEDIA_ASSETS ||--o{ GALLERY_PHOTOS : photo
+    MEDIA_ASSETS ||--o{ ABOUT_IMAGES : image
+    MEDIA_ASSETS ||--o{ FACILITIES : image
+    FACILITIES ||--o{ FACILITY_FEATURES : includes
+    VENDOR_CATEGORIES ||--o{ VENDORS : classifies
+    MEDIA_ASSETS ||--o{ VENDORS : logo
+    MEDIA_ASSETS ||--o{ CLIENT_REVIEWS : photo
+    FAQ_CATEGORIES |o--o{ FAQS : groups
+
+    ADMIN_USERS {
+      bigint id PK
+      varchar email UK
+      varchar password_hash
+    }
+    ADMIN_SESSIONS {
+      varchar session_id PK
+      int expires
+      mediumtext data
+    }
+    MEDIA_ASSETS {
+      bigint id PK
+      varchar storage_key UK
+      bigint size_bytes
+    }
+    GALLERY_ALBUMS {
+      bigint id PK
+      varchar slug UK
+      boolean is_published
+    }
+    GALLERY_PHOTOS {
+      bigint id PK
+      bigint album_id FK
+      bigint media_id FK
+    }
+    INQUIRIES {
+      bigint id PK
+      char submission_key UK
+      date event_date
+      enum preferred_shift
+    }
+    MANUAL_INQUIRY_COUNTS {
+      date event_date PK
+      int display_count
+    }
+    INQUIRY_COUNT_SETTINGS {
+      tinyint id PK
+      enum display_mode
+    }
