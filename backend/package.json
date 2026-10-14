@@ -1,0 +1,30 @@
+{
+  "name": "@elite/backend",
+  "version": "0.9.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test tests/*.test.js",
+    "db:check": "node scripts/check-database.js",
+    "check:syntax": "node scripts/check-syntax.js",
+    "admin:create": "node scripts/create-admin.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1",
+    "dotenv": "^16.6.1",
+    "helmet": "^8.1.0",
+    "zod": "^4.0.0",
+    "express-session": "^1.18.2",
+    "express-rate-limit": "^8.1.0",
+    "bcryptjs": "^3.0.2",
+    "multer": "^2.0.2",
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.1"
+  },
+  "description": "Elite website API including Site CMS, Gallery, Calendar, Inquiry Management and security"
+}
