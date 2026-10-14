@@ -1,0 +1,33 @@
+{
+  "name": "elite-convention-hall-website",
+  "version": "0.9.0",
+  "private": true,
+  "description": "Elite Convention Hall Website Phase 12 \u2014 Integrated Regression Testing",
+  "workspaces": [
+    "frontend/public-website",
+    "frontend/admin-dashboard",
+    "backend"
+  ],
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev:public": "npm run dev --workspace=@elite/public-website",
+    "dev:admin": "npm run dev --workspace=@elite/admin-dashboard",
+    "dev:api": "npm run dev --workspace=@elite/backend",
+    "build": "npm run build --workspace=@elite/public-website && npm run build --workspace=@elite/admin-dashboard",
+    "test:api": "npm run test --workspace=@elite/backend",
+    "db:check": "npm run db:check --workspace=@elite/backend",
+    "check:api-syntax": "npm run check:syntax --workspace=@elite/backend",
+    "admin:create": "npm run admin:create --workspace=@elite/backend",
+    "check:contracts": "node --test scripts/contracts.test.mjs",
+    "test:smoke": "node scripts/live-smoke.mjs",
+    "test:integration": "node --test backend/tests/phase12.integration.test.js",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0"
+  }
+}
